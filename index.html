@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pocket Signal Radar</title>
+<style>
+body{background:#090e18;color:white;font-family:Arial;padding:20px}
+main{max-width:500px;margin:auto}
+h1{color:#58a6ff;text-align:center}
+.panel{background:#151e2d;padding:18px;border-radius:14px;margin:15px 0}
+input,select,button{width:100%;padding:14px;margin:7px 0;border-radius:8px;box-sizing:border-box}
+input,select{background:#0d1523;color:white;border:1px solid #34445e}
+button{background:#1677e8;color:white;border:0;font-weight:bold}
+.pair{padding:12px;border-bottom:1px solid #34445e}
+#result{text-align:center;font-size:25px;color:#58a6ff}
+</style>
+</head>
+<body>
+<main>
+<h1>⚡ POCKET SIGNAL RADAR</h1>
+<div class="panel">
+<p>● ДЕМО-РЕЖИМ</p>
+<p>Таймфрейм: 5 секунд</p>
+<select id="type" onchange="render()">
+<option value="all">Усі пари</option>
+<option value="normal">Звичайні</option>
+<option value="otc">OTC</option>
+</select>
+<input id="search" placeholder="Пошук валютної пари" oninput="render()">
+</div>
+<div class="panel">
+<h3>Валютні пари</h3>
+<div id="pairs"></div>
+</div>
+<div class="panel">
+<h3>Сканер сигналів</h3>
+<button onclick="scan()">СКАНУВАТИ</button>
+<h2 id="result">ОЧІКУВАННЯ</h2>
+<p id="details">Котирування ще не підключені</p>
+</div>
+<div class="panel">
+<p>Джерело: Biquote</p>
+<p>Режим: Signals</p>
+<p>Автоматичні угоди: ВИМКНЕНО</p>
+</div>
+</main>
+<script>
+const normal=["EUR/USD","GBP/USD","USD/JPY","USD/CHF","AUD/USD","USD/CAD","NZD/USD","EUR/GBP","EUR/JPY","GBP/JPY","EUR/CHF","AUD/JPY","GBP/CHF","EUR/AUD","EUR/CAD","AUD/CAD","NZD/JPY","CAD/JPY","CHF/JPY","GBP/AUD"];
+const otc=normal.map(p=>p+" OTC");
+let selected="EUR/USD";
+function render(){
+let t=document.getElementById("type").value;
+let q=document.getElementById("search").value.toUpperCase();
+let a=t==="normal"?normal:t==="otc"?otc:[...normal,...otc];
+document.getElementById("pairs").innerHTML=a.filter(p=>p.includes(q)).map(p=>`<div class="pair" onclick="choose('${p}')">${p}</div>`).join("");
+}
+function choose(p){
+selected=p;
+document.getElementById("result").textContent=p;
+document.getElementById("details").textContent="Пару вибрано";
+}
+function scan(){
+document.getElementById("result").textContent="НЕМАЄ ДАНИХ";
+document.getElementById("details").textContent="Потрібно підключити реальні котирування Biquote для "+selected;
+}
+render();
+</script>
+</body>
+</html>
